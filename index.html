@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Môle 4 — Port de Dunkerque</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#f5f5f3;--bg3:#efefeb;
+  --text:#1a1a1a;--text2:#666;--text3:#999;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
+  --radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1e1e1e;--bg2:#2a2a2a;--bg3:#242424;
+  --text:#f0f0f0;--text2:#aaa;--text3:#777;
+  --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg3);color:var(--text);font-size:14px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:210px;min-width:210px;background:var(--bg);border-right:0.5px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-logo{padding:16px 14px 12px;border-bottom:0.5px solid var(--border)}
+.sb-logo span{font-size:15px;font-weight:600;display:block}
+.sb-logo small{font-size:11px;color:var(--text2)}
+nav{flex:1;padding:8px 0}
+.nav-btn{width:100%;background:none;border:none;padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text);font-size:13px;text-align:left}
+.nav-btn:hover{background:var(--bg2)}
+.nav-btn.active{background:var(--bg2);font-weight:600}
+.nav-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.nav-sub{padding-left:40px;display:none}
+.nav-sub.open{display:block}
+.nav-sub a{display:block;padding:5px 8px;font-size:12px;color:var(--text2);cursor:pointer;border-radius:4px}
+.nav-sub a:hover{color:var(--text);background:var(--bg2)}
+.sb-footer{padding:12px 14px;border-top:0.5px solid var(--border);font-size:11px;color:var(--text2)}
+.main{flex:1;overflow-y:auto;padding:20px}
+.section{display:none}
+.section.active{display:block}
+.sec-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;padding:16px;background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border)}
+.sec-num{font-size:36px;font-weight:600;color:var(--border2);line-height:1;min-width:48px}
+.sec-tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:4px;color:#fff}
+.sec-title{font-size:18px;font-weight:600}
+.sec-desc{font-size:12px;color:var(--text2);margin-top:2px}
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.kpi-item{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.kpi-val{font-size:20px;font-weight:600}
+.kpi-label{font-size:11px;color:var(--text2);margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.card-stripe{height:3px}
+.banner{height:140px;background:var(--bg2);cursor:pointer;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.banner img{width:100%;height:100%;object-fit:cover;display:block}
+.banner-placeholder{text-align:center;color:var(--text2)}
+.banner-placeholder i{font-size:28px;display:block;margin-bottom:4px}
+.banner-placeholder p{font-size:11px}
+.banner-tag{position:absolute;top:8px;left:8px;padding:2px 8px;border-radius:10px;font-size:10px;color:#fff;font-weight:600}
+.banner-num{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.45);color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
+.banner-change{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.55);color:#fff;border:none;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.card-body{padding:12px}
+.card-title{font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.card-content{display:none;font-size:12px;line-height:1.6;color:var(--text2);margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border)}
+.card.open .card-content{display:block}
+.finance-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px}
+.finance-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.finance-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.finance-label{font-size:11px;color:var(--text2)}
+.finance-title{font-size:14px;font-weight:600}
+.finance-amount{font-size:28px;font-weight:700;margin:4px 0}
+.finance-sub{font-size:11px;color:var(--text2);margin-bottom:8px}
+.finance-items{padding-left:16px;font-size:12px;color:var(--text2);line-height:1.9}
+.bar{height:8px;background:var(--bg2);border-radius:4px;margin-top:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.phase-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:14px;position:relative;padding-left:24px}
+.phase-dot{width:10px;height:10px;border-radius:50%;background:var(--text2);position:absolute;left:-5px;top:20px;border:2px solid var(--bg3)}
+.phase-num{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.phase-title{font-size:15px;font-weight:600}
+.phase-years{font-size:12px;color:var(--text2);margin-bottom:10px}
+.phase-tasks{padding-left:0;list-style:none;font-size:12px;color:var(--text2);line-height:1.9}
+.energy-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.energy-head{display:flex;align-items:center;gap:10px;padding:12px 12px 0}
+.energy-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.energy-title{font-size:13px;font-weight:600}
+.energy-sub{font-size:11px;color:var(--text2)}
+.energy-val{font-size:24px;font-weight:700;padding:8px 12px 0}
+.energy-points{padding:8px 12px 12px 24px;font-size:11px;color:var(--text2);line-height:1.8}
+.odd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.odd-card{border-radius:var(--radius-lg);padding:14px;cursor:pointer;transition:transform 0.15s}
+.odd-card:hover{transform:scale(1.02)}
+.odd-badge{font-size:10px;font-weight:600;color:rgba(255,255,255,0.8);margin-bottom:6px}
+.odd-num{font-size:36px;font-weight:700;color:rgba(255,255,255,0.3);line-height:1}
+.odd-icon{font-size:22px;display:block;margin:4px 0}
+.odd-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px}
+.odd-desc{display:none;font-size:11px;color:rgba(255,255,255,0.85);line-height:1.6}
+.odd-card.open .odd-desc{display:block}
+.odd-card.open .odd-num{display:none}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:999;align-items:center;justify-content:center}
+.lightbox.active{display:flex}
+.lightbox img{max-width:90%;max-height:90%;border-radius:8px;object-fit:contain}
+.lb-close{position:fixed;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--bg);border:0.5px solid var(--border2);padding:8px 16px;border-radius:20px;font-size:12px;transition:transform 0.3s;z-index:1000;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.mob-kpi{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.mob-kpi-item{background:var(--bg2);border-radius:6px;padding:6px 10px;text-align:center}
+.mob-kpi-val{font-size:15px;font-weight:700}
+.mob-kpi-label{font-size:10px;color:var(--text2)}
+.header-block{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border);padding:20px;margin-bottom:20px}
+.header-block h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header-block p{font-size:13px;color:var(--text2)}
+.header-tag{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+@media(max-width:700px){
+  .sidebar{width:52px;min-width:52px}
+  .sb-logo span,.sb-logo small,.nav-btn span:not(.nav-icon),.nav-sub,.sb-footer{display:none}
+  .nav-btn{justify-content:center;padding:10px}
+  .kpi-strip{grid-template-columns:repeat(3,1fr)}
+  .odd-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <span>MÔLE 4</span>
+      <small>Port de Dunkerque</small>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sb-footer">Projet urbain · 2025–2032</div>
+  </div>
+  <div class="main" id="main"></div>
+</div>
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <img id="lb-img" src="" alt="">
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const NAV=[
+  {n:1,icon:'🏙️',label:"Vue d'ensemble",color:'rgba(255,122,0,0.15)',sub:[
+    {icon:'🗺️',label:'Vue générale',el:'b1'},{icon:'🏠',label:'Habitat & Services',el:'b2'},
+    {icon:'🌿',label:'Parc',el:'b3'},{icon:'🏥',label:'Pôle Médical',el:'b4'},{icon:'🎓',label:'Formation',el:'b5'}
+  ]},
+  {n:2,icon:'💰',label:'Financement',color:'rgba(26,111,191,0.15)',sub:[
+    {icon:'🇪🇺',label:'FEDER / Interreg',el:'f1'},{icon:'🏛️',label:'Collectivités',el:'f2'},
+    {icon:'🏗️',label:'Privé',el:'f3'},{icon:'🌿',label:'Fonds verts',el:'f4'}
+  ]},
+  {n:3,icon:'🔨',label:'Réaménagement',color:'rgba(39,174,96,0.15)',sub:[
+    {icon:'📅',label:'Phase 1',el:'ph1'},{icon:'📅',label:'Phase 2',el:'ph2'},{icon:'📅',label:'Phase 3',el:'ph3'}
+  ]},
+  {n:4,icon:'🚌',label:'Accès & Mobilités',color:'rgba(142,68,173,0.15)',sub:[
+    {icon:'🚌',label:'Transport',el:'m1'},{icon:'🚲',label:'Mobilités douces',el:'m2'},{icon:'🚗',label:'Stationnement',el:'m3'}
+  ]},
+  {n:5,icon:'⚡',label:'Énergie',color:'rgba(230,126,34,0.15)',sub:[
+    {icon:'🌊',label:'Houlomotrice',el:'e1'},{icon:'♻️',label:'Réduction',el:'e2'},
+    {icon:'🔗',label:'Innovation',el:'e3'},{icon:'🚰',label:'Traitement eau',el:'e4'}
+  ]},
+  {n:6,icon:'🌍',label:'ODD',color:'rgba(22,160,133,0.15)',sub:[]}
+];
+
+let activeSection=1,openSubs=new Set([1]),openBlocks=new Set(),openOdds=new Set(),images={},toastTimer=null;
+
+function loadImages(){try{const s=localStorage.getItem('mole4-images');if(s)images=JSON.parse(s);}catch(e){}}
+function saveImages(){try{localStorage.setItem('mole4-images',JSON.stringify(images));}catch(e){}}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200);}
+function openLightbox(src){document.getElementById('lb-img').src=src;document.getElementById('lightbox').classList.add('active');}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('active');}
+document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLightbox();});
+
+function handleFile(id,file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{images[id]=ev.target.result;saveImages();showToast('Photo sauvegardée ✓');renderAll();};
+  reader.readAsDataURL(file);
+}
+
+function makeBanner(id,tag,tagColor,num,style=''){
+  const hasImg=!!images[id];
+  return `<div class="banner" style="${style}" onclick="bannerClick('${id}')">
+    ${hasImg
+      ?`<img src="${images[id]}" alt=""><button class="banner-change" onclick="event.stopPropagation();document.getElementById('fi-${id}').click()"><i class="ti ti-upload" style="font-size:11px"></i> Changer</button>`
+      :`<div class="banner-placeholder"><i class="ti ti-photo-plus"></i><p>Ajouter une photo</p></div>`}
+    ${tag?`<span class="banner-tag" style="background:${tagColor}">${tag}</span>`:''}
+    ${num?`<span class="banner-num">${num}</span>`:''}
+    <input type="file" accept="image/*" id="fi-${id}" style="display:none" onchange="handleFile('${id}',this.files[0])">
+  </div>`;
+}
+
+function bannerClick(id){if(images[id])openLightbox(images[id]);else document.getElementById('fi-'+id).click();}
+function showSection(n){activeSection=n;openSubs=new Set([n]);renderAll();document.querySelector('.main').scrollTo({top:0,behavior:'smooth'});}
+function scrollToEl(id){setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
+function toggleBlock(id){openBlocks.has(id)?openBlocks.delete(id):openBlocks.add(id);renderAll();}
+function toggleOdd(idx){openOdds.has(idx)?openOdds.delete(idx):openOdds.add(idx);renderAll();}
+
+function renderNav(){
+  document.getElementById('nav').innerHTML=NAV.map(item=>`
+    <div>
+      <button class="nav-btn ${activeSection===item.n?'active':''}" onclick="showSection(${item.n})">
+        <span class="nav-icon" style="background:${item.color}">${item.icon}</span>
+        <span style="flex:1">${item.label}</span>
+        ${item.sub.length?`<i class="ti ti-chevron-${openSubs.has(item.n)?'up':'down'}" style="font-size:12px;color:#999"></i>`:''}
+      </button>
+      <div class="nav-sub ${openSubs.has(item.n)?'open':''}">
+        ${item.sub.map(s=>`<a onclick="showSection(${item.n});scrollToEl('${s.el}')">${s.icon} ${s.label}</a>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function sec1(){
+  const cards=[
+    {id:'b1',num:'01',tag:'Urbanisme',tc:'#FF7A00',title:"Vue d'ensemble du site",content:"Le Môle 4 s'étend sur une friche portuaire de plus de <strong>20 hectares</strong>. Le projet ambitionne de créer un <strong>quartier mixte, connecté et durable</strong>. Habitat, santé, formation, espaces verts et services coexistent au sein d'un même ensemble urbain pensé pour 2032."},
+    {id:'b2',num:'02',tag:'Habitat',tc:'#FF7A00',title:'Habitat, Repos & Services',content:"<strong>250 logements</strong> modernes en deux tranches. <strong>Maison de repos</strong> de 3 700 m² accessible, parking 185 places. <strong>Supérette & pharmacie</strong> intégrées pour résidents et salariés."},
+    {id:'b3',num:'03',tag:'Nature',tc:'#27AE60',title:'Parc & Promenade',content:"Plus de <strong>10 ha</strong> d'espaces verts dédiés à la biodiversité. Promenade douce le long du quai pour piétons et cyclistes. Noues paysagères, îlots de fraîcheur et zones humides. Labellisé REV3."},
+    {id:'b4',num:'04',tag:'Santé',tc:'#1A6FBF',title:'Pôle Médical',content:"<strong>Centre médical de 20 000 m²</strong> sur R+3 : généralistes, spécialistes et plateau technique. Accès PMR. Urgences de proximité et téléconsultation intégrées."},
+    {id:'b5',num:'05',tag:'Formation',tc:'#8E44AD',title:'Centre de Formation',content:"<strong>4 000 m²</strong> dédiés aux métiers techniques et portuaires. Ateliers pratiques, simulateurs de conduite. Partenariats avec le Grand Port Maritime et la Région Hauts-de-France."},
+  ];
+  return `<div class="kpi-strip">
+    <div class="kpi-item"><div class="kpi-val" style="color:#FF7A00">20 ha</div><div class="kpi-label">Surface totale</div></div>
+    <div class="kpi-item"><div class="kpi-val" style="color:#1A6FBF">250</div><div class="kpi-label">Logements</div></div>
+    <div class="kpi-item"><div class="kpi-val" style="color:#27AE60">10 ha</div><div class="kpi-label">Espaces verts</div></div>
+    <div class="kpi-item"><div class="kpi-val" style="color:#8E44AD">6</div><div class="kpi-label">Pôles</div></div>
+    <div class="kpi-item"><div class="kpi-val" style="color:#16A085">2032</div><div class="kpi-label">Livraison</div></div>
+  </div>
+  <div class="grid">${cards.map(c=>`
+    <div id="${c.id}" class="card${openBlocks.has(c.id)?' open':''}">
+      <div class="card-stripe" style="background:${c.tc}"></div>
+      ${makeBanner(c.id,c.tag,c.tc,c.num)}
+      <div class="card-body">
+        <div class="card-title" onclick="toggleBlock('${c.id}')">${c.title}
+          <i class="ti ti-${openBlocks.has(c.id)?'minus':'plus'}" style="font-size:14px;flex-shrink:0"></i>
+        </div>
+        <div class="card-content">${c.content}</div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function sec2(){
+  const cards=[
+    {id:'f1',icon:'🇪🇺',bg:'rgba(26,111,191,0.1)',label:'Fonds européens',title:'FEDER / Interreg',amount:'14 M€',sub:'Fonds de développement régional · Appel à projets 2024–2027',items:['Réhabilitation de la friche portuaire','Infrastructures vertes et biodiversité','Mobilités douces et espaces publics'],pct:'29%',bar:'linear-gradient(90deg,#1A6FBF,#4A9FEF)'},
+    {id:'f2',icon:'🏛️',bg:'rgba(39,174,96,0.1)',label:'Collectivités locales',title:'CUD & Région HdF',amount:'8 M€',sub:'CUD + Région Hauts-de-France · CPER 2021–2027',items:['CUD : 5 M€ — voirie, réseaux, espaces publics','Région : 3 M€ — formation, attractivité'],pct:'19%',bar:'linear-gradient(90deg,#27AE60,#5ADE90)'},
+    {id:'f3',icon:'🏗️',bg:'rgba(255,122,0,0.1)',label:'Investissement privé',title:'Promoteurs & exploitants',amount:'18 M€',sub:'Partenariats public-privé · Appels à projets urbains innovants',items:['Résidences (1re et 2e tranche) : 9 M€','Centre médical : 5 M€','Maison de repos & commerces : 4 M€'],pct:'43%',bar:'linear-gradient(90deg,#FF7A00,#FFAA55)'},
+    {id:'f4',icon:'🌿',bg:'rgba(142,68,173,0.1)',label:'Fonds verts',title:'ADEME & Dotation État',amount:'9 M€',sub:'Fonds vert 2024 · REV3 · OFB · ADEME',items:['Centrale houlomotrice 200 kW','Station traitement eau de mer','Végétalisation & biodiversité'],pct:'18%',bar:'linear-gradient(90deg,#8E44AD,#BE84DD)'},
+  ];
+  return `<div class="finance-card" style="border:1.5px solid #FF7A00">
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+      <div><div class="finance-label">Budget total estimé</div><div class="finance-amount">49 M€</div><div class="finance-sub">Estimation 2025 · Hors foncier portuaire</div></div>
+      <div style="flex:1;min-width:200px">
+        ${[['#1A6FBF','FEDER / Interreg','14 M€'],['#27AE60','Collectivités','8 M€'],['#FF7A00','Privé','18 M€'],['#8E44AD','Fonds verts','9 M€']].map(([c,l,v])=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:4px">
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:${c};display:inline-block"></span>${l}</span>
+          <strong>${v}</strong>
+        </div>`).join('')}
+        <div class="bar" style="height:10px;margin-top:8px"><div style="height:100%;border-radius:3px;background:linear-gradient(90deg,#1A6FBF 0% 29%,#27AE60 29% 45%,#FF7A00 45% 82%,#8E44AD 82% 100%)"></div></div>
+      </div>
+    </div>
+  </div>
+  ${cards.map(c=>`
+    <div id="${c.id}" class="finance-card">
+      <div class="finance-head">
+        <div class="finance-icon" style="background:${c.bg}">${c.icon}</div>
+        <div><div class="finance-label">${c.label}</div><div class="finance-title">${c.title}</div></div>
+      </div>
+      <div class="finance-amount">${c.amount}</div>
+      <div class="finance-sub">${c.sub}</div>
+      <ul class="finance-items">${c.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      <div class="bar"><div class="bar-fill" style="width:${c.pct};background:${c.bar}"></div></div>
+      <div style="font-size:10px;color:var(--text2);margin-top:4px;text-align:right">${c.pct} du budget</div>
+    </div>`).join('')}`;
+}
+
+function sec3(){
+  const phases=[
+    {id:'ph1',imgId:'ph1img',num:'PHASE 1',title:'Dépollution & Infrastructures',years:'2025 — 2027',tasks:['🔬 Études géotechniques et diagnostic environnemental','🚧 Dépollution des terres et désamiantage','🛣️ Création des voiries principales et réseaux','🚌 Aménagement entrée principale et raquette bus','🌱 Premières plantations structurantes du parc']},
+    {id:'ph2',imgId:'ph2img',num:'PHASE 2',title:'Construction des équipements',years:'2027 — 2029',tasks:['🎓 Centre de formation 4 000 m² — T2 2028','🏥 Centre médical 20 000 m² R+3 — T4 2028','🏠 Résidences 1re tranche (130 logements) — T1 2029','🛌 Maison de repos 3 700 m² — T2 2029','🚗 Parking logistique 268 places — T2 2029']},
+    {id:'ph3',imgId:'ph3img',num:'PHASE 3',title:'Finitions & Inauguration',years:'2029 — 2032',tasks:['🏠 2e tranche de logements (120 unités) — T1 2031','🛒 Commerces de proximité (supérette, pharmacie)','🌳 Aménagement complet du parc et promenade quai','🔌 Connexion smart grid et réseau de chaleur','🎉 Inauguration officielle du quartier — 2032']},
+  ];
+  return `<div style="border-left:2px solid var(--border);margin-left:4px">
+    ${phases.map(p=>`
+      <div id="${p.id}" class="phase-card">
+        <div class="phase-dot"></div>
+        <div class="phase-num">${p.num}</div>
+        <div class="phase-title">${p.title}</div>
+        <div class="phase-years">${p.years}</div>
+        ${makeBanner(p.imgId,'','','')}
+        <ul class="phase-tasks" style="margin-top:10px">${p.tasks.map(t=>`<li>${t}</li>`).join('')}</ul>
+      </div>`).join('')}
+  </div>`;
+}
+
+function sec4(){
+  const cards=[
+    {id:'m1',tag:'Transport',tc:'#8E44AD',title:'Transport en commun',content:"Voie de bus à double sens traversant le site. Connexion directe aux lignes <strong>DK'Bus</strong> (lignes 2, 4 et C1). Fréquence renforcée aux heures de pointe (toutes les 10 min).",kpi:[{val:'3',l:'Lignes bus'},{val:"10'",l:'Fréquence'},{val:"8'",l:'Vers centre'}]},
+    {id:'m2',tag:'Doux',tc:'#27AE60',title:'Mobilités douces',content:"<strong>Piste cyclable sécurisée de 2,8 km</strong> raccordée au REVe dunkerquois. Promenade piétonne le long du quai. 80 arceaux vélos sécurisés et 2 stations de réparation.",kpi:[{val:'2,8 km',l:'Piste cyclable'},{val:'80',l:'Arceaux vélo'}]},
+    {id:'m3',tag:'Stationnement',tc:'#888',title:'Stationnement & Logistique',content:"<strong>268 places au total</strong> : 100 personnel, 168 visiteurs. <strong>20 bornes de recharge</strong> électrique (50 kW). Voie dédiée livraisons et pompiers.",kpi:[{val:'268',l:'Places auto'},{val:'20',l:'Bornes élec.'},{val:'185',l:'Maison repos'}]},
+  ];
+  return `<div class="grid">${cards.map(c=>`
+    <div id="${c.id}" class="card${openBlocks.has(c.id)?' open':''}">
+      <div class="card-stripe" style="background:${c.tc}"></div>
+      ${makeBanner(c.id,c.tag,c.tc,'')}
+      <div class="card-body">
+        <div class="card-title" onclick="toggleBlock('${c.id}')">${c.title}
+          <i class="ti ti-${openBlocks.has(c.id)?'minus':'plus'}" style="font-size:14px;flex-shrink:0"></i>
+        </div>
+        <div class="card-content">${c.content}
+          <div class="mob-kpi">${c.kpi.map(k=>`<div class="mob-kpi-item"><div class="mob-kpi-val">${k.val}</div><div class="mob-kpi-label">${k.l}</div></div>`).join('')}</div>
+        </div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function sec5(){
+  const cards=[
+    {id:'e1',imgId:'e1img',icon:'🌊',bg:'rgba(26,111,191,0.12)',title:'Centrale houlomotrice',sub:'Énergie des vagues du port',val:'200 kW',pct:'45%',bar:'linear-gradient(90deg,#1A6FBF,#4A9FEF)',points:['Convertisseurs oscillants immergés dans le bassin','Production estimée : 1 400 MWh/an','Projet pilote unique en France en milieu portuaire','Mise en service : T3 2029 — partenariat IFREMER']},
+    {id:'e2',imgId:'e2img',icon:'♻️',bg:'rgba(39,174,96,0.15)',title:'Réduction des consommations',sub:'Bâtiments BBC & passifs',val:'−40 %',pct:'40%',bar:'linear-gradient(90deg,#27AE60,#5ADE90)',points:['Isolation renforcée (ouate de cellulose 200 mm)','VMC double-flux à récupération de chaleur','Éclairage LED intelligent et capteurs de présence','Objectif : RE2020 + niveau E3 C2']},
+    {id:'e3',imgId:'e3img',icon:'🔗',bg:'rgba(26,111,191,0.15)',title:'Innovation & Réseau',sub:'Chaleur portuaire & hydrogène',val:'REV3',pct:'55%',bar:'linear-gradient(90deg,#1A6FBF,#4A9FEF)',points:["Connexion au réseau de chaleur du port","Étude hydrogène vert (2027)","Smart grid et gestion intelligente","Neutralité carbone opérationnelle en 2032"]},
+    {id:'e4',imgId:'e4img',icon:'🚰',bg:'rgba(38,189,226,0.15)',title:"Traitement de l'eau de mer",sub:'Station pilote dessalement',val:'500 m³/j',pct:'60%',bar:'linear-gradient(90deg,#26BDE2,#7ED9EF)',points:['Osmose inverse sur eau de mer du bassin portuaire','Capacité : 500 m³/jour — usage industriel & arrosage','Alimentation par la centrale houlomotrice','Mise en service : T1 2030 — partenariat Veolia & IFREMER']},
+  ];
+  return `<div class="grid">${cards.map(c=>`
+    <div id="${c.id}" class="energy-card">
+      <div class="energy-head">
+        <div class="energy-icon" style="background:${c.bg}">${c.icon}</div>
+        <div><div class="energy-title">${c.title}</div><div class="energy-sub">${c.sub}</div></div>
+      </div>
+      ${makeBanner(c.imgId,'','','','border-radius:0')}
+      <div class="energy-val">${c.val}</div>
+      <div class="bar" style="margin:4px 12px 0"><div class="bar-fill" style="width:${c.pct};background:${c.bar}"></div></div>
+      <ul class="energy-points">${c.points.map(p=>`<li>${p}</li>`).join('')}</ul>
+    </div>`).join('')}</div>`;
+}
+
+function sec6(){
+  const odds=[
+    {idx:0,badge:'ODD 3',num:'3',icon:'❤️',color:'#4C9F38',title:'Bonne santé & bien-être',desc:"Le pôle médical de 20 000 m² améliore l'accès aux soins. Espaces verts et promenade favorisent la santé mentale et physique."},
+    {idx:1,badge:'ODD 4',num:'4',icon:'📚',color:'#C5192D',title:'Éducation de qualité',desc:"Centre de formation de 4 000 m² pour les métiers techniques portuaires. Partenariats avec les entreprises locales et la Région."},
+    {idx:2,badge:'ODD 6',num:'6',icon:'💧',color:'#26BDE2',title:'Eau propre & assainissement',desc:"Station pilote de traitement de l'eau de mer. Gestion zéro rejet des eaux pluviales via noues paysagères et bassins de rétention."},
+    {idx:3,badge:'ODD 7',num:'7',icon:'⚡',color:'#FCC30B',title:'Énergie propre & abordable',desc:"Centrale houlomotrice 200 kW, réseau de chaleur REV3, smart grid. Objectif d'autonomie énergétique partielle dès 2029."},
+    {idx:4,badge:'ODD 8',num:'8',icon:'💼',color:'#A21942',title:'Travail décent & croissance',desc:"400+ emplois directs et indirects. Ancrage de l'économie locale dunkerquoise et valorisation des filières portuaires."},
+    {idx:5,badge:'ODD 12',num:'12',icon:'♻️',color:'#BF8B2E',title:'Production responsable',desc:"Bâtiments bas-carbone avec matériaux biosourcés. 90 % de valorisation des déchets de chantier. Économie circulaire sur le site."},
+  ];
+  return `<div class="odd-grid">${odds.map(o=>`
+    <div class="odd-card${openOdds.has(o.idx)?' open':''}" style="background:${o.color}" onclick="toggleOdd(${o.idx})">
+      <div class="odd-badge">${o.badge}</div>
+      ${!openOdds.has(o.idx)?`<div class="odd-num">${o.num}</div>`:''}
+      <span class="odd-icon">${o.icon}</span>
+      <div class="odd-title">${o.title}</div>
+      <div class="odd-desc">${o.desc}</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderAll(){
+  renderNav();
+  const SECS=[
+    {n:1,tag:"Vue d'ensemble",color:'#FF7A00',title:'Le projet Môle 4',desc:'Un nouveau quartier mixte et durable sur une friche portuaire de 20 ha à Dunkerque',fn:sec1},
+    {n:2,tag:'Financement',color:'#1A6FBF',title:'Plan de financement',desc:'Enveloppe globale estimée à 49 M€ — mix public / privé / européen',fn:sec2},
+    {n:3,tag:'Réaménagement',color:'#27AE60',title:'Phasage des travaux',desc:'Trois phases progressives de 2025 à 2032 pour transformer le Môle 4',fn:sec3},
+    {n:4,tag:'Mobilités',color:'#8E44AD',title:'Accès & Mobilités',desc:'Une desserte multimodale pour un quartier accessible à tous',fn:sec4},
+    {n:5,tag:'Énergie',color:'#E67E22',title:'Stratégie énergétique',desc:'Un quartier bas-carbone inscrit dans la 3e Révolution Industrielle',fn:sec5},
+    {n:6,tag:'Durabilité',color:'#16A085',title:'Objectifs de Développement Durable',desc:"6 ODD de l'ONU auxquels le projet Môle 4 contribue directement",fn:sec6},
+  ];
+  document.getElementById('main').innerHTML=`
+    <div class="header-block">
+      <div class="header-tag">Poster Interactif</div>
+      <h1>Projet Môle 4 · Port de Dunkerque</h1>
+      <p>Reconversion urbaine durable · 2025–2032 · 20 ha · 49 M€</p>
+    </div>
+    ${SECS.map(s=>`
+      <div class="section${activeSection===s.n?' active':''}" id="sec${s.n}">
+        <div class="sec-header">
+          <div class="sec-num">0${s.n}</div>
+          <div>
+            <span class="sec-tag" style="background:${s.color}">${s.tag}</span>
+            <div class="sec-title">${s.title}</div>
+            <div class="sec-desc">${s.desc}</div>
+          </div>
+        </div>
+        ${s.fn()}
+      </div>`).join('')}`;
+}
+
+loadImages();
+renderAll();
+</script>
+</body>
+</html>
